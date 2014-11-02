@@ -28,7 +28,7 @@ angular.module('exposureApp')
 
 	  });
 
-    $scope.amount = 100
+    $scope.amount = 5;
     $scope.sendPaymentRequest = function(){
     	$http.get('http://mako.local:4567/request_payment',
 			{

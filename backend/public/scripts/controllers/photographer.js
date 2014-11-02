@@ -33,15 +33,16 @@ angular.module('exposureApp')
     $scope.photographer = $scope.fakepts[$routeParams.id];
 
   	console.log($routeParams.id);
-  	$http.get('/').
-	  success(function(data, status, headers, config) {
-	  	// get data and assign to photographer
-	  	//alert(data);
-	  }).
-	  error(function(data, status, headers, config) {
+  	$http.get('http://localhost:4567/list_active_photographers').
+    success(function(data, status, headers, config) {
+      $scope.photographer = data[$routeParams.id -1];
+      console.log(data[$routeParams.id -1]);
+      // $scope.photographers = $scope.fakept;
+      //actually assign data to $scope.photographers
+    }).
+    error(function(data, status, headers, config) {
 
-	  });
-    
+  });
   	function requestPhotographer_(position){
   		// send http request for hiring
       console.log(position);

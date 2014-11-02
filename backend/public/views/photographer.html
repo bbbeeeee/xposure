@@ -6,14 +6,16 @@
 </div>
 <div class="row">
 	<div class="small-12 columns profile">
-		<h1>Kevin Tu</h1>
+		<h1>{{photographer.first_name}}</h1>
 		<h2>Photographer</h2>
 		<div class="line"></div>
-		<p class="rates">I charge $20/hour for events, $200 flat rate for photoshoot.</p>
+		<p class="rates">{{photographer.desc}}</p>
 	</div>
 </div>
 <div class="row">
-	<label>Your email:</label>
-	<input type="text" ng-model="email">
-	<div id="hire" ng-click="requestPhotographer()" class="button nice-button">Hire</div>
+	<div class="hireme">
+		<label>Your email:</label>
+		<input type="text" ng-model="email">
+		<div id="hire" ng-click="requestPhotographer()" class="button nice-button">Hire</div>
+	</div>
 </div>
