@@ -33,7 +33,7 @@ angular.module('exposureApp')
     $scope.photographer = $scope.fakepts[$routeParams.id];
 
   	console.log($routeParams.id);
-  	$http.get('http://localhost:4567/list_active_photographers').
+  	$http.get('http://mako.local:4567/list_active_photographers').
     success(function(data, status, headers, config) {
       $scope.photographer = data[$routeParams.id -1];
       console.log(data[$routeParams.id -1]);

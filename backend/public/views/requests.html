@@ -1,6 +1,10 @@
 <ul class="requests" ng-repeat="request in requests">
 	<li class="request uk-panel request-panel">
-		<h3>
+		<div ng-if="request.paid">
+			Paid - {{request.customer_email}}
+		</div>
+		<div ng-if="!request.paid">
+			<h3>
 			Customer email: {{request.customer_email}}
 		</h3>
 		<form ng-submit="sendPaymentRequest()">
@@ -9,5 +13,7 @@
 margin-left: 20px;" type="number" ng-model="amount">
 			<input type="submit" class="button nice-button" value="Send payment request">
 		</form>
+
+		</div>
 	</li>
 </ul>

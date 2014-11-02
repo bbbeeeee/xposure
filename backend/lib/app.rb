@@ -29,7 +29,7 @@ Mail.defaults do
 end
 
 DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, 'mysql://root:newpwd@localhost/photo_test')
+DataMapper.setup(:default, 'mysql://root:test@localhost/photo_test')
 
 class Photographer
 	include DataMapper::Resource
@@ -136,6 +136,9 @@ Availsession.create(:active => true, :location => "51.1,-.11", :photographer => 
 get '/request_payment' do
 	active_session_id = params[:active_session_id]
 	session = Ongoingsession.get(active_session_id.to_i)
+	if (session[:completed])
+		return "Already paid"
+	end
 	session.update(:completed => true)
 	photographer = session.photographer
 	amount = params[:amount]
@@ -190,6 +193,8 @@ get '/list_active_photographers' do
 	return profiles.to_json
 end
 
+
+
 get '/request_photographer' do
 	session_id = params[:session_id]
 	customer_email = params[:email]
@@ -221,12 +226,28 @@ end
 get '/active_sessions' do
 	photographer_id = params[:photographer_id]
 	photographer = Photographer.get(photographer_id.to_i)
-	return Ongoingsession.all(:photographer => photographer).to_json
+	sessions = Ongoingsession.all
+	all_payments = Array.new
+	sessions.each do |ses| 
+		puts ses.inspect
+		payment = Payment.first(:ongoingsession => ses)
+		payc = false
+		if payment != nil && payment[:paid]
+			payc = true
+		end
+		apay = {:customer_email => ses[:customer_email], :paid => payc}
+		all_payments.push(apay)
+	end
+	return all_payments.to_json
 end
 get '/accept_request' do
 	request_id = params[:request_id]
 	request = Request.get(request_id.to_i)
+
+	puts request.inspect
+	Ongoingsession.create(:location => request[:location], :customer_email => request[:customer_email], :time => Time.now, :completed => false, :photographer => request.photographer)
 	send_accept_email(request)
+
 	return "Request accepted."
 end
 
@@ -261,7 +282,7 @@ def send_request_payment_email payment
 	photographer = session.photographer
 	photographer_email = photographer[:email]
 	photographer_name = photographer[:first_name]
-	pay_link = "http://mako.local:4567/pay?payment_id=" + payment[:id].to_s
+	pay_link = "http://mako.local:4567/pay?payment_id=" + payment[:payment_token].to_s
 	customer_email = session[:customer_email]
 
 	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => "$" + amount.to_s, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
@@ -282,4 +303,3 @@ def send_payment_emails payment
 	send_email(photographer_email,replacements,"Your payment from " + customer_email + " has been completed.", "./lib/payment_complete_photographer")
 	send_email(customer_email,replacements,"Your payment to " + photographer_name + " has been completed.", "./lib/payment_complete_customer")
 end
-

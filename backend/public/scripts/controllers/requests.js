@@ -28,6 +28,17 @@ angular.module('exposureApp')
 
 	  });
 
+      $http.get('http://mako.local:4567/completed_payments', {
+        params: { photographer_id: 1 }
+    }).
+      success(function(data, status, headers, config) {
+        $scope.completed_payments = data;
+        // alert(data);
+      }).
+      error(function(data, status, headers, config) {
+
+      });
+
     $scope.amount = 5;
     $scope.sendPaymentRequest = function(){
     	$http.get('http://mako.local:4567/request_payment',
