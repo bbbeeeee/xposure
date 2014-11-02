@@ -9,4 +9,4 @@ gem 'dm-mysql-adapter'
 gem 'omniauth'
 gem 'omniauth-identity'
 gem 'savon', '~> 2.0'
-
+gem 'mail'

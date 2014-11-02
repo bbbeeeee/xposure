@@ -11,6 +11,7 @@ require "net/http"
 require './lib/mercury.rb'
 
 require 'mail'
+set :bind, '0.0.0.0'
 
 options = { :address              => "smtp.gmail.com",
             :port                 => 587,
@@ -114,15 +115,17 @@ def setPaymentCompleted(payment)
 	payment.update(:paid => true)
 end
 
-test_pg = Photographer.new(:first_name => "Kevin Tu", :email => "kevinmdtu@gmail.com", :facebook_id => "kevin")
-test_pg.save
-test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :photographer => test_pg)
-test_ogs.save
-puts 1
-db_pay = createTransaction(5.0, 'Payment for photos', test_ogs)
-puts 2
-db_pay.save
-puts 3
+test_pg = Photographer.create(:first_name => "Kevin Tu", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/kevintu.jpg", :desc => "Houston, TX Native")
+Photographer.create(:first_name => "Max Wang", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/maxwang.jpg", :desc => "I love kanye west")
+Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/kevintu.jpg", :desc => "Nice to meet you")
+
+#test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :photographer => test_pg)
+#test_ogs.save
+#puts 1
+#db_pay = createTransaction(5.0, 'Payment for photos', test_ogs)
+#puts 2
+#db_pay.save
+#puts 3
 Availsession.create(:active => true, :location => "51.5033630,-0.1276250", :photographer => test_pg)
 
 
