@@ -1,0 +1,170 @@
+img.profile-img{
+	width:100%;
+}
+
+.person{
+	padding:0px;
+}
+
+.profile{
+	
+}
+
+.profile h1{
+	font-size:3em;
+}
+
+.profile h2{
+	font-size:2em;
+}
+
+.profile p{ /* bio, info, etc */
+	font-size:1.2em;
+	width:100%;
+}
+
+#hire{ 
+	width: 200px;
+	margin-left:15px;
+	display: block;
+}
+
+.profile .hire{ /* button */
+
+}
+
+#map-canvas{
+	height:300px;
+	width:100%;
+}
+
+.photographer-panel{
+	border:1px solid #CECECE;
+	background:#EEEEEE;
+	margin-bottom:10px;
+	border-radius:5px;
+}
+
+.photographer-panel:hover{
+	cursor:pointer;
+}
+
+.photographer-panel img{
+	border-radius:5px;
+}
+
+.photographers{
+	list-style-type: none;
+	margin-left:0px;
+
+	margin:10px;
+}
+
+.photographer-info{
+	padding:10px;
+	margin-bottom:-10px;
+}
+
+.photographer-info .uk-panel-title{
+	border-bottom:1px solid #DEDEDE;
+}
+
+.photographer-description{
+	margin-top: 10px;
+}
+
+.toggle-topbar a{
+	
+}
+
+.nice-button{
+	background:white;
+	border:1px solid #00cedc;
+	color:#333;
+	border-radius:2px;
+}
+
+.nice-button:hover{
+	background-color:#00cedc;
+	color:#white;
+}
+
+.top-bar-section ul li{
+	background-color:white;
+}
+
+.top-bar, .top-bar.expanded .title-area{
+	background:white;
+}
+
+.top-bar .name h1 a, .top-bar.expanded .toggle-topbar a,
+.top-bar-section ul li > a,
+.top-bar .toggle-topbar.menu-icon a,
+.top-bar .toggle-topbar.menu-icon,
+.top-bar .toggle-topbar.menu-icon::after
+.top-bar.expanded .toggle-topbar a span::after{
+	color:#333;
+}
+
+.requests{
+	list-style-type: none;
+}
+
+.request-panel{
+	border:1px solid #DEDEDE;
+	padding:10px;
+}
+
+/*.top-bar, 
+.title-area li h1 a, 
+.top-bar-section, 
+.top-bar-section > *,
+.top-bar-section li:not(.has-form) a:not(.button),
+.top-bar-section ul li,
+.top-bar-section ul li.active,
+.top-bar-section .dropdown li:not(.has-form):not(.active) > a:not(.button){
+	color: #333;
+	background:#FFF;
+}
+
+.top-bar-section ul li,
+.top-bar-section ul li:hover{
+	background:#FFF;
+	border:1px solid #333;
+}
+
+.top-bar-section ul li:hover{
+	background-color:#FFF;
+	background:FFF;
+}
+
+.top-bar-section ul li > a.button:hover, .top-bar-section ul li > a.button:focus {
+  background-color: #FFF; 
+}
+
+.top-bar-section ul li.active{
+	border:1px solid #008cba;
+}
+
+li.active{
+	background:#FFF;
+}
+.top-bar .name h1 a{
+	color:#333;
+}
+
+.black {
+	color:#333;
+}
+
+.top-bar-section li:not(.has-form) a:not(.button){
+	background
+}*/
+
+.gridblock {
+	width:20%;
+}
+
+.gridblock.w2 {
+	width:40%;
+}

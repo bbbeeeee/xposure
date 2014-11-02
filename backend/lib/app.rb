@@ -10,9 +10,10 @@ require "net/http"
 #require "lib/overload_hash"
 require './lib/mercury.rb'
 
+
 require 'mail'
 set :bind, '0.0.0.0'
-
+set :public, 'public'
 options = { :address              => "smtp.gmail.com",
             :port                 => 587,
             :domain               => 'pascoej.me',
@@ -28,7 +29,7 @@ Mail.defaults do
 end
 
 DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, 'mysql://root:test@localhost/photo_test')
+DataMapper.setup(:default, 'mysql://root:newpwd@localhost/photo_test')
 
 class Photographer
 	include DataMapper::Resource
@@ -115,9 +116,9 @@ def setPaymentCompleted(payment)
 	payment.update(:paid => true)
 end
 
-test_pg = Photographer.create(:first_name => "Kevin Tu", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/kevintu.jpg", :desc => "Houston, TX Native")
-Photographer.create(:first_name => "Max Wang", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/maxwang.jpg", :desc => "I love kanye west")
-Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/kevintu.jpg", :desc => "Nice to meet you")
+test_pg = Photographer.create(:first_name => "Kevin Tu", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "img/kevin.jpg", :desc => "Houston, TX Native")
+Photographer.create(:first_name => "Max Wang", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/img/max.jpg", :desc => "I love kanye west")
+Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "img/brandon.jpg", :desc => "Nice to meet you")
 
 #test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :photographer => test_pg)
 #test_ogs.save
@@ -178,7 +179,7 @@ get '/list_active_photographers' do
 		location = as[:location]
 		profilephoto = as.photographer[:propic]
 		first_name = as.photographer[:first_name]
-		desc = as.photographer[:first_name]
+		desc = as.photographer[:desc]
 
 		profile = {:photographer_id => photographer_id, :availsession_id => availsession_id, :location => location, :profilephoto => profilephoto, :first_name => first_name, :desc => desc}
 		profiles.push(profile)
@@ -186,7 +187,7 @@ get '/list_active_photographers' do
 	return profiles.to_json
 end
 
-post '/request_photographer' do
+get '/request_photographer' do
 	session_id = params[:session_id]
 	customer_email = params[:email]
 	location = params[:location]
