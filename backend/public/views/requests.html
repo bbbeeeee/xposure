@@ -1,11 +1,11 @@
 <ul class="requests" ng-repeat="request in requests">
 	<li class="request uk-panel request-panel">
-		<h1>
-			{{request.customer_email}}
-		</h1>
+		<h3>
+			Customer email: {{request.customer_email}}
+		</h3>
 		<form ng-submit="sendPaymentRequest()">
 			<label>How much are you charging?</label>
-			<span style="float:left;display:inline-block; margin-top:5px;">$</span><input style="width: 300px;
+			<span style="float:left;display:inline-block; margin-top:5px;">$</span><input style="width: 100px;
 margin-left: 20px;" type="number" ng-model="amount">
 			<input type="submit" class="button nice-button" value="Send payment request">
 		</form>

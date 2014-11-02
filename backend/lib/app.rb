@@ -29,7 +29,7 @@ Mail.defaults do
 end
 
 DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, 'mysql://root:test@localhost/photo_test')
+DataMapper.setup(:default, 'mysql://root:newpwd@localhost/photo_test')
 
 class Photographer
 	include DataMapper::Resource

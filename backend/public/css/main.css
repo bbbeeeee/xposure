@@ -25,7 +25,6 @@ img.profile-img{
 
 #hire{ 
 	width: 200px;
-	margin-left:15px;
 	display: block;
 }
 
@@ -108,13 +107,24 @@ img.profile-img{
 
 .requests{
 	list-style-type: none;
+	margin-left:0px;
+}
+
+.request{
+	
 }
 
 .request-panel{
 	border:1px solid #DEDEDE;
 	padding:10px;
+	border-radius:5px;
+	margin-left:0px;
+	margin: 10px;
 }
 
+.hireme{
+	margin:10px;
+}
 /*.top-bar, 
 .title-area li h1 a, 
 .top-bar-section, 
