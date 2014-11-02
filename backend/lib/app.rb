@@ -128,6 +128,7 @@ Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca
 #db_pay.save
 #puts 3
 Availsession.create(:active => true, :location => "51.5033630,-0.1276250", :photographer => test_pg)
+Ongoingsession.create(:location =>"51.5033630,-0.127625", :customer_email => "me@brandontruong.com",:completed => false, :photographer => test_pg)
 
 
 get '/request_payment' do
