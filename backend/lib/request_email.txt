@@ -1,0 +1,6 @@
+Hey {{photographer-name}},
+
+{{customer-email}} wants you to take photos for them at the following location {{google-maps-link}}. To accept this request. Go here {{accept-link}}.
+
+Thanks,
+Xposure Team XposurePowered@gmail.com
