@@ -1,0 +1,39 @@
+<div id="map-canvas"></div>
+<h2 style="padding:10px;">Photographers in your area:</h1>
+<ul class="photographers" ng-repeat="photographer in photographers">
+	<li ng-click="goToPhotographer({{photographer.id}})">
+		<div class="uk-panel photographer-panel">
+			<img src="{{photographer.imgurl}}" alt="">
+			<div class="photographer-info">
+				<div class="uk-panel-title">
+					<h3>{{photographer.name}}</h3>
+				</div>
+				<p class="photographer-description">{{photographer.information}}</p>
+			</div>
+		</div>
+	</li>
+	<!-- <li>
+		<div class="uk-panel photographer-panel">
+			<img src="img/kevin.jpg" alt="">
+			<div class="photographer-info">
+				<div class="uk-panel-title">
+					<h3>Kevin Tu</h3>
+				</div>
+				<p class="photographer-description">$20/hr for event, $200 for photoshoot</p>
+			</div>
+
+		</div>
+	</li>
+	<li>
+		<div class="uk-panel photographer-panel">
+			<img src="img/kevin.jpg" alt="">
+			<div class="photographer-info">
+				<div class="uk-panel-title">
+					<h3>Kevin Tu</h3>
+				</div>
+				<p class="photographer-description">$20/hr for event, $200 for photoshoot</p>
+			</div>
+
+		</div>
+	</li> -->
+</ul>
