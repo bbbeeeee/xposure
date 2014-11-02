@@ -86,7 +86,6 @@ class Ongoingsession
 	property :customer_email, String
 	property :time, DateTime
 	property :completed, Boolean
-	property :abandoned, Boolean
 
 	belongs_to :photographer
 	has n, :payment
@@ -117,7 +116,7 @@ end
 
 test_pg = Photographer.new(:first_name => "Kevin Tu", :email => "kevinmdtu@gmail.com", :facebook_id => "kevin")
 test_pg.save
-test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :abandoned => false, :photographer => test_pg)
+test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :photographer => test_pg)
 test_ogs.save
 puts 1
 db_pay = createTransaction(5.0, 'Payment for photos', test_ogs)
@@ -130,10 +129,11 @@ Availsession.create(:active => true, :location => "51.5033630,-0.1276250", :phot
 get '/request_payment' do
 	active_session_id = params[:active_session_id]
 	session = Ongoingsession.get(active_session_id.to_i)
+	session.update(:completed => true)
 	photographer = session.photographer
 	amount = params[:amount]
 	payment = createTransaction(amount, "Payment for photos taken by " + photographer[:first_name], session)
-	send_payment_email(payment)
+	send_request_payment_email(payment)
 	return "0"
   #session_id = params[:session_id]
   #amount = params[:amount]
@@ -211,7 +211,11 @@ def send_email destination, replacements, subject, body_text_name
 	end
 	mail.deliver!
 end
-
+get '/active_sessions' do
+	photographer_id = params[:photographer_id]
+	photographer = Photographer.get(photographer_id.to_i)
+	return Ongoingsession.all(:photographer => photographer).to_json
+end
 get '/accept_request' do
 	request_id = params[:request_id]
 	request = Request.get(request_id.to_i)
@@ -245,7 +249,7 @@ def send_request_email request
 end
 
 def send_request_payment_email payment 
-	amount = payment[:amount]
+	amount = "%.2f" % payment[:amount]
 	session = payment.ongoingsession
 	photographer = session.photographer
 	photographer_email = photographer[:email]
@@ -253,12 +257,12 @@ def send_request_payment_email payment
 
 	customer_email = session[:customer_email]
 
-	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => amount, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
+	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => "$" + amount.to_s, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
 	send_email(customer_email,replacements,photographer_name + " has requested payment", "./lib/payment_request")
 end
 
-def send_payment_email payment 
-	amount = payment[:amount]
+def send_payment_emails payment 
+	amount = "%.2f" % payment[:amount]
 	session = payment.ongoingsession
 	photographer = session.photographer
 	photographer_email = photographer[:email]
@@ -267,7 +271,7 @@ def send_payment_email payment
 
 	customer_email = session[:customer_email]
 
-	replacements = {"{{customer-email}}" => customer_email, "{{payment-amount}}" => amount, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
+	replacements = {"{{customer-email}}" => customer_email, "{{payment-amount}}" => "$" + amount.to_s, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
 	send_email(photographer_email,replacements,"Your payment from " + customer_email + " has been completed.", "./lib/payment_complete_photographer")
 	send_email(customer_email,replacements,"Your payment to " + photographer_name + " has been completed.", "./lib/payment_complete_customer")
 end
