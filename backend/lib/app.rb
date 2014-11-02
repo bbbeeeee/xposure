@@ -36,12 +36,14 @@ class Photographer
 	property :first_name,	String
 	property :email, 	String
 	property :facebook_id, String
+	property :desc, Text
+	property :propic, String, :length => 256
 
 	has n, :availsession
 	has n, :ongoingsession
+	has n, :request
 	#belongs_to :identity
 end
-
 #class Identity
 #  include DataMapper::Resource
 #  include OmniAuth::Identity::Models::DataMapper
@@ -54,14 +56,22 @@ end
 #
 #  attr_accessor :password_confirmation
 #
-#end
+#
+class Request
+	include DataMapper::Resource
 
+	property :id, Serial
+	property :customer_email, String, :length => 256
+	property :location, String, :length => 256
+
+	belongs_to :photographer
+end
 class Availsession
 	include DataMapper::Resource
 
 	property :id,	Serial
-	property :start_time, DateTime
-	property :end_time, DateTime
+	#property :start_time, DateTime
+	#property :end_time, DateTime
 	property :location, String
 	property :active, Boolean
 
@@ -114,14 +124,19 @@ db_pay = createTransaction(5.0, 'Payment for photos', test_ogs)
 puts 2
 db_pay.save
 puts 3
+Availsession.create(:active => true, :location => "51.5033630,-0.1276250", :photographer => test_pg)
 
 
-get '/create_transaction' do
-	createTransaction("test",200,"test")
+get '/request_payment' do
+	active_session_id = params[:active_session_id]
+	session = Ongoingsession.get(active_session_id.to_i)
+	photographer = session.photographer
+	amount = params[:amount]
+	payment = createTransaction(amount, "Payment for photos taken by " + photographer[:first_name], session)
+	send_payment_email(payment)
+	return "0"
   #session_id = params[:session_id]
   #amount = params[:amount]
-
-
 end
 
 get '/pay' do 
@@ -150,9 +165,37 @@ post '/transaction_completed' do
 	"Transaction Completed!"
 end
 
-get '/request_photographer' do
 
+get '/list_active_photographers' do
+	all = Availsession.all(:active => true)
+	profiles = Array.new
+	all.each do |as|
+		photographer_id = as.photographer[:id]
+		availsession_id = as[:id]
+		location = as[:location]
+		profilephoto = as.photographer[:propic]
+		first_name = as.photographer[:first_name]
+		desc = as.photographer[:first_name]
+
+		profile = {:photographer_id => photographer_id, :availsession_id => availsession_id, :location => location, :profilephoto => profilephoto, :first_name => first_name, :desc => desc}
+		profiles.push(profile)
+	end
+	return profiles.to_json
 end
+
+post '/request_photographer' do
+	session_id = params[:session_id]
+	customer_email = params[:email]
+	location = params[:location]
+
+	availsession = Availsession.get(session_id.to_i)
+	
+	photographer = availsession.photographer
+	request = Request.new(:photographer => photographer, :customer_email => customer_email, :location => location)
+	request.save
+	send_request_email(request)
+end
+
 
 def send_email destination, replacements, subject, body_text_name 
 	raw_body = File.read(body_text_name)
@@ -169,13 +212,58 @@ def send_email destination, replacements, subject, body_text_name
 	mail.deliver!
 end
 
+get '/accept_request' do
+	request_id = params[:request_id]
+	request = Request.get(request_id.to_i)
+	send_accept_email(request)
+	return "Request accepted."
+end
 
-def send_payment_emails payment 
+def send_accept_email request
+	customer_email = request[:customer_email]
+	photographer = request.photographer
+	photographer_email = photographer[:email]
+	photographer_name = photographer[:first_name]
+	replacements = {"{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
+	send_email(customer_email, replacements, photographer_name + " has accepted your request", "./lib/request_accepted")
+end
+
+def send_request_email request 
+	photographer = request.photographer
+	photographer_name = photographer[:first_name]
+	c_email = request[:customer_email]
+	photographer_email = photographer[:email]
+	location = request[:location]
+
+	google_maps_link = "https://www.google.com/maps?q="+location+"&z=17"
+	accept_link = "http://pascoej.me/accept_request?request_id=" + request[:id].to_s
+	subject = "" +c_email + " has requested that you take photos for them"
+
+
+	replacements = {"{{photographer-name}}"=>photographer_name, "{{customer-email}}"=>c_email,"{{google-maps-link}}"=>google_maps_link,"{{accept-link}}"=> accept_link}
+	send_email(photographer_email,replacements,subject, "./lib/request_email.txt")
+end
+
+def send_request_payment_email payment 
 	amount = payment[:amount]
 	session = payment.ongoingsession
 	photographer = session.photographer
 	photographer_email = photographer[:email]
 	photographer_name = photographer[:first_name]
+
+	customer_email = session[:customer_email]
+
+	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => amount, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
+	send_email(customer_email,replacements,photographer_name + " has requested payment", "./lib/payment_request")
+end
+
+def send_payment_email payment 
+	amount = payment[:amount]
+	session = payment.ongoingsession
+	photographer = session.photographer
+	photographer_email = photographer[:email]
+	photographer_name = photographer[:first_name]
+	payment_token = payment[:payment_token]
 
 	customer_email = session[:customer_email]
 

@@ -1,4 +1,4 @@
-{{photographer-name}} has requested {{amount}} dollars for their services on {{date}}. To complete this transaction click here. {{pay-link}}.
+{{photographer-name}} has requested {{payment-amount}} dollars for their services today. Complete this transaction here: {{pay-link}}.
 
 Thanks,
 Xposure Team XposurePowered@gmail.com
