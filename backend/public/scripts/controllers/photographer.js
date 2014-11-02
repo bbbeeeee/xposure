@@ -45,7 +45,7 @@ angular.module('exposureApp')
   	function requestPhotographer_(position){
   		// send http request for hiring
       console.log(position);
-      $http.get('http://localhost:4567/request_photographer', {
+      $http.get('http://mako.local:4567/request_photographer', {
         params: {
           session_id: $routeParams.id, email: $scope.email, location: position.coords.latitude + "," + position.coords.longitude
         }

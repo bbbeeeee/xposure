@@ -15,7 +15,7 @@ angular.module('exposureApp')
     // 		email: 'brandonxtruong@gmail.com'
     // 	}
     // ]
-    $http.get('http://localhost:4567/active_sessions', {
+    $http.get('http://mako.local:4567/active_sessions', {
     	params: { photographer_id: 1 }
     }).
 	  success(function(data, status, headers, config) {
@@ -30,7 +30,7 @@ angular.module('exposureApp')
 
     $scope.amount = 100
     $scope.sendPaymentRequest = function(){
-    	$http.get('http://localhost:4567/request_payment',
+    	$http.get('http://mako.local:4567/request_payment',
 			{
 			    params: { active_session_id: 1, amount: $scope.amount}
 			}).

@@ -106,9 +106,9 @@ end
 DataMapper.auto_migrate!
 $client = HCMercury.new('013163015566916', 'ypBj@f@zt3fJRX,k')
 def createTransaction (total_amount, invoice, ongoingsession)
-	opts = {total_amount: '1', tax_amount: '0', process_complete_url: 'http://localhost:4567/transaction_completed', return_url: 'yahoo.com', :invoice => 'lol'}
+	opts = {total_amount: total_amount, tax_amount: '0', process_complete_url: 'http://mako.local:4567/transaction_completed', return_url: 'yahoo.com', :invoice => 'Yahooooo'}
 	payment_id = $client.initialize_payment(opts)[:initialize_payment_response][:initialize_payment_result][:payment_id]
-	db_pay = Payment.new(:amount => 5.0, :paid => false, :ongoingsession => ongoingsession, :payment_token => payment_id)
+	db_pay = Payment.new(:amount => total_amount, :paid => false, :ongoingsession => ongoingsession, :payment_token => payment_id)
 	db_pay.save
 	return db_pay
 end
@@ -117,7 +117,7 @@ def setPaymentCompleted(payment)
 end
 
 test_pg = Photographer.create(:first_name => "Kevin Tu", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "img/kevin.jpg", :desc => "Houston, TX Native")
-Photographer.create(:first_name => "Max Wang", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/img/max.jpg", :desc => "I love kanye west")
+test_pg2 = Photographer.create(:first_name => "Max Wang", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "/img/max.jpg", :desc => "I love kanye west")
 Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca", :facebook_id => "kevin", :propic => "img/brandon.jpg", :desc => "Nice to meet you")
 
 #test_ogs = Ongoingsession.new(:location => "22.0,22.0", :customer_email=>"pascoej@murri.ca", :time => Time.now, :completed => false, :photographer => test_pg)
@@ -128,7 +128,9 @@ Photographer.create(:first_name => "Latane Bullock", :email => "pascoej@murri.ca
 #db_pay.save
 #puts 3
 Availsession.create(:active => true, :location => "51.5033630,-0.1276250", :photographer => test_pg)
-Ongoingsession.create(:location =>"51.5033630,-0.127625", :customer_email => "me@brandontruong.com",:completed => false, :photographer => test_pg)
+Availsession.create(:active => true, :location => "51.1,-.11", :photographer => test_pg2)
+
+#Ongoingsession.create(:location =>"51.5033630,-0.127625", :customer_email => "me@brandontruong.com",:completed => false, :photographer => test_pg)
 
 
 get '/request_payment' do
@@ -245,7 +247,7 @@ def send_request_email request
 	location = request[:location]
 
 	google_maps_link = "https://www.google.com/maps?q="+location+"&z=17"
-	accept_link = "http://pascoej.me/accept_request?request_id=" + request[:id].to_s
+	accept_link = "http://mako.local:4567/accept_request?request_id=" + request[:id].to_s
 	subject = "" +c_email + " has requested that you take photos for them"
 
 
@@ -259,7 +261,7 @@ def send_request_payment_email payment
 	photographer = session.photographer
 	photographer_email = photographer[:email]
 	photographer_name = photographer[:first_name]
-	pay_link = "http://127.0.0.1:4567/pay?payment_id=" + payment[:id].to_s
+	pay_link = "http://mako.local:4567/pay?payment_id=" + payment[:id].to_s
 	customer_email = session[:customer_email]
 
 	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => "$" + amount.to_s, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}

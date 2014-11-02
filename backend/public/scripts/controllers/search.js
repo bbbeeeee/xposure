@@ -24,7 +24,7 @@ angular.module('exposureApp')
 
 	// $scope.photographers = $scope.fakepts;
 	$scope.photographers = [];
-	$http.get('http://localhost:4567/list_active_photographers').
+	$http.get('http://mako.local:4567/list_active_photographers').
   success(function(data, status, headers, config) {
   	$scope.photographers = data;
   	console.log(data);
