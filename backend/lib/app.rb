@@ -29,7 +29,7 @@ Mail.defaults do
 end
 
 DataMapper::Logger.new($stdout, :debug)
-DataMapper.setup(:default, 'mysql://root:newpwd@localhost/photo_test')
+DataMapper.setup(:default, 'mysql://root:test@localhost/photo_test')
 
 class Photographer
 	include DataMapper::Resource
@@ -259,7 +259,7 @@ def send_request_payment_email payment
 	photographer = session.photographer
 	photographer_email = photographer[:email]
 	photographer_name = photographer[:first_name]
-
+	pay_link = "http://127.0.0.1:4567/pay?payment_id=" + payment[:id].to_s
 	customer_email = session[:customer_email]
 
 	replacements = {"{{pay-link}}"=>pay_link,"{{customer-email}}" => customer_email, "{{payment-amount}}" => "$" + amount.to_s, "{{photographer-name}}" => photographer_name, "{{photographer-email}}" => photographer_email}
